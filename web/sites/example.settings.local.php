@@ -55,7 +55,7 @@ $config['system.performance']['css']['preprocess'] = FALSE;
 $config['system.performance']['js']['preprocess'] = FALSE;
 
 /**
- * Disable the render cache (this includes the page cache).
+ * Disable the render cache.
  *
  * Note: you should test with the render cache enabled, to ensure the correct
  * cacheability metadata is present. However, in the early stages of
@@ -64,7 +64,7 @@ $config['system.performance']['js']['preprocess'] = FALSE;
  * This setting disables the render cache by using the Null cache back-end
  * defined by the development.services.yml file above.
  *
- * Do not use this setting until after the site is installed.
+ * Only use this setting once the site has been installed.
  */
 # $settings['cache']['bins']['render'] = 'cache.backend.null';
 
@@ -75,6 +75,20 @@ $config['system.performance']['js']['preprocess'] = FALSE;
  * database. This makes it easier to develop custom migrations.
  */
 # $settings['cache']['bins']['discovery_migration'] = 'cache.backend.memory';
+
+/**
+ * Disable Internal Page Cache.
+ *
+ * Note: you should test with Internal Page Cache enabled, to ensure the correct
+ * cacheability metadata is present. However, in the early stages of
+ * development, you may want to disable it.
+ *
+ * This setting disables the page cache by using the Null cache back-end
+ * defined by the development.services.yml file above.
+ *
+ * Only use this setting once the site has been installed.
+ */
+# $settings['cache']['bins']['page'] = 'cache.backend.null';
 
 /**
  * Disable Dynamic Page Cache.
@@ -92,7 +106,7 @@ $config['system.performance']['js']['preprocess'] = FALSE;
  * During development it can be useful to install test extensions for debugging
  * purposes.
  */
-$settings['extension_discovery_scan_tests'] = TRUE;
+# $settings['extension_discovery_scan_tests'] = TRUE;
 
 /**
  * Enable access to rebuild.php.
@@ -115,19 +129,3 @@ $settings['rebuild_access'] = TRUE;
  * directory.
  */
 $settings['skip_permissions_hardening'] = TRUE;
-
-// Database settings: Default for when using DrupalVM.
-$databases['default']['default'] = array (
-  'database' => 'drupal',
-  'username' => 'drupal',
-  'password' => 'drupal',
-  'prefix' => '',
-  'host' => 'localhost',
-  'port' => '',
-  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
-  'driver' => 'mysql',
-);
-
-// Default hash salt for local development only - if you wish to change it, see
-// https://gist.github.com/pfaocle/ec6c0c4a65c70f6fb1e1 for generating one with drush.
-$settings['hash_salt'] = 'tGjrSxQs_5_mM8EYoAKKFfxMrNJ5BtyHcUq5gzno_FbAC3Gy-itEId-dxHxqe-yVGk-4QDIRIA';

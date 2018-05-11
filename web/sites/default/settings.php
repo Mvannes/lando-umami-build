@@ -35,4 +35,15 @@ if (file_exists($app_root . '/' . $site_path . '/settings.platformsh.php')) {
 // Local settings. These come last so that they can override anything.
 if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
   include $app_root . '/' . $site_path . '/settings.local.php';
-}
+}$databases['default']['default'] = array (
+  'database' => 'drupal8',
+  'username' => 'drupal8',
+  'password' => 'drupal8',
+  'prefix' => '',
+  'host' => 'database',
+  'port' => '3306',
+  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+  'driver' => 'mysql',
+);
+$settings['hash_salt'] = 'fwdutg35lVPKnSsySAOFNfY6yf-UnRzImagAwY3Mal2u0OOIVWKVuym6MG5xlqw5YNDQ_Cc8pw';
+$settings['install_profile'] = 'demo_umami';
