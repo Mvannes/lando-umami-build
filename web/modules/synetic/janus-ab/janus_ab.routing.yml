@@ -1,0 +1,10 @@
+janus_ab.admin_settings:
+  path: '/admin/config/janus'
+  defaults:
+    _form: '\Drupal\janus_ab\Form\ConfigForm'
+    _title: 'Janus module configuration'
+  requirements:
+    _permission: 'administer site configuration'
+
+route_callbacks:
+  - 'janus_ab.logging_route_creator:routes'

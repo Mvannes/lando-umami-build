@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.0/phpunit.xsd"
+      colors="true" bootstrap="vendor/autoload.php">
+  <testsuites>
+    <testsuite name="drupal/janus_ab test suite">
+      <directory>./tests</directory>
+    </testsuite>
+    <testsuite name="drupal/janus_dynamic_page_cache test suite">
+      <directory>./modules/janus_dynamic_page_cache/tests</directory>
+    </testsuite>
+    <testsuite name="drupal/janus_page_cache test suite">
+      <directory>./modules/janus_page_cache/tests</directory>
+    </testsuite>
+  </testsuites>
+  <filter>
+    <whitelist>
+      <directory>src</directory>
+      <directory>modules/janus_dynamic_page_cache/src</directory>
+      <directory>modules/janus_page_cache/src</directory>
+    </whitelist>
+  </filter>
+</phpunit>

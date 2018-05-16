@@ -1,0 +1,29 @@
+<?php
+
+/**
+ * @file
+ * Contains content_vary.module.
+ */
+
+function content_vary_block_view_alter(array &$build, \Drupal\Core\Block\BlockPluginInterface $entity) {
+  if (!$entity instanceof \Drupal\demo_umami\Plugin\Block\UmamiFooterPromo) {
+    return;
+  }
+  // Get our services from the service container.
+  // Specifically, we get the config to check for our active experiments, and the variation picker to pick variations.
+  $abConfig        = \Drupal::service('janus_ab.ab_config');
+  // If there is no experiment with our specific id, we should not add any variation templates.
+  if (!$abConfig->hasActiveExperimentWithId('Zx7vjnCcQ4qmVdWVoYtpMQ')) {
+    return;
+  }
+  $variationPicker = \Drupal::service('janus_ab.variation_picker');
+  // Get the active experiment, because we know it exists.
+  $experiment = $abConfig->getActiveExperimentById('Zx7vjnCcQ4qmVdWVoYtpMQ');
+  // Pick a variation, the variationPicker internals will ensure that this is the correct variation for each user.
+  $variation = $variationPicker->pickVariationForExperiment($experiment);
+
+  if ($variation->getId() === '1') {
+    $entity->setConfigurationValue('promo_title', 'america, fuck yeah!');
+    $entity->setConfigurationValue('label', 'america, fuck yeah!');
+  }
+}

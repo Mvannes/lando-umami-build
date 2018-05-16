@@ -1,0 +1,5 @@
+vendorName: Synetic
+siteName: syneticnl
+trafficUrl: /logTraffic
+successUrl: /logSuccess
+experiments: {  }

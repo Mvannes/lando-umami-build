@@ -1,0 +1,29 @@
+success:
+  js:
+    js/logSuccess.behavior.js: {}
+  dependencies:
+   - core/jquery
+   - core/drupal
+   - core/drupalSettings
+   - core/jquery.once
+   - core/jquery.cookie
+
+traffic:
+  js:
+    js/logTraffic.behavior.js: {}
+  dependencies:
+   - core/jquery
+   - core/drupal
+   - core/drupalSettings
+   - core/jquery.once
+   - core/jquery.cookie
+
+event:
+  js:
+    js/logEvent.behavior.js: {}
+  dependencies:
+   - core/jquery
+   - core/drupal
+   - core/drupalSettings
+   - core/jquery.once
+   - core/jquery.cookie

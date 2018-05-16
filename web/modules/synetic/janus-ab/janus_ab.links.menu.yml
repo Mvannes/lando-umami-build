@@ -1,0 +1,5 @@
+janus.admin.structure.settings:
+  title: 'Janus AB'
+  description: 'Configure Janus AB experiments'
+  route_name: janus_ab.admin_settings
+  parent: system.admin_config
