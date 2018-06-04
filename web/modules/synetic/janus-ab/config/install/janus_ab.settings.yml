@@ -1,5 +1,5 @@
 vendorName: Synetic
-siteName: syneticnl
+siteName: cool-site-name
 trafficUrl: /logTraffic
 successUrl: /logSuccess
 experiments: {  }

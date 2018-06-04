@@ -7,8 +7,8 @@
     <testsuite name="drupal/janus_ab test suite">
       <directory>./tests</directory>
     </testsuite>
-    <testsuite name="drupal/janus_dynamic_page_cache test suite">
-      <directory>./modules/janus_dynamic_page_cache/tests</directory>
+    <testsuite name="drupal/janus_render_cache test suite">
+      <directory>./modules/janus_render_cache/tests</directory>
     </testsuite>
     <testsuite name="drupal/janus_page_cache test suite">
       <directory>./modules/janus_page_cache/tests</directory>
@@ -17,7 +17,7 @@
   <filter>
     <whitelist>
       <directory>src</directory>
-      <directory>modules/janus_dynamic_page_cache/src</directory>
+      <directory>modules/janus_render_cache/src</directory>
       <directory>modules/janus_page_cache/src</directory>
     </whitelist>
   </filter>

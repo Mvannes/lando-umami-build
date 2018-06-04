@@ -4,23 +4,16 @@ declare(strict_types = 1);
 
 namespace Drupal\janus_render_cache\Cache;
 
-use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Cache\CacheFactoryInterface;
 use Drupal\Core\Cache\Context\CacheContextsManager;
-use Drupal\Core\PageCache\RequestPolicyInterface;
-use Drupal\Core\PageCache\ResponsePolicyInterface;
 use Drupal\Core\Render\PlaceholderGeneratorInterface;
 use Drupal\Core\Render\PlaceholderingRenderCache;
-use Drupal\Core\Render\RenderCache;
-use Drupal\page_cache\StackMiddleware\PageCache;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Synetic\JanusAB\Config\ABConfigInterface;
 use Synetic\JanusAB\Variation\VariationPickerInterface;
 
 /**
- * Override the PageCache to allow for AB-testing.
+ * Override the RenderCache to allow for AB-testing.
  */
 class JanusABRenderCache extends PlaceholderingRenderCache {
 
@@ -38,6 +31,22 @@ class JanusABRenderCache extends PlaceholderingRenderCache {
    */
   private $variationPicker;
 
+  /**
+   * JanusABRenderCache constructor.
+   *
+   * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
+   *   RequestStack to get the correct request object.
+   * @param \Drupal\Core\Cache\CacheFactoryInterface $cacheFactory
+   *   Cachefactory to create caches.
+   * @param \Drupal\Core\Cache\Context\CacheContextsManager $cacheContextsManager
+   *   CacheContextsManager to manage caches.
+   * @param \Drupal\Core\Render\PlaceholderGeneratorInterface $placeholderGenerator
+   *   PlaceholderGenerator to generate placeholders.
+   * @param \Synetic\JanusAB\Config\ABConfigInterface $config
+   *   ABConfig to check if experiments exist.
+   * @param \Synetic\JanusAB\Variation\VariationPickerInterface $variationPicker
+   *   Used to choose the correct variation for a user.
+   */
   public function __construct(
     RequestStack $requestStack,
     CacheFactoryInterface $cacheFactory,
@@ -56,8 +65,11 @@ class JanusABRenderCache extends PlaceholderingRenderCache {
     $this->variationPicker = $variationPicker;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   protected function createCacheID(array &$elements) {
-    // If we have an experiment, we should add cache contexts with the experiment
+    // If we have an experiment, we should add cache contexts for the experiment
     // and variation ids to ensure user's caching works correctly.
     if ($this->config->hasActiveExperiment()) {
       $experiment = $this->config->getActiveExperiment();
@@ -67,4 +79,5 @@ class JanusABRenderCache extends PlaceholderingRenderCache {
     }
     parent::createCacheID($elements);
   }
+
 }

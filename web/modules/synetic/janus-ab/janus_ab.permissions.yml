@@ -1,0 +1,4 @@
+configure_janus_ab:
+  title: 'Configure JanusAB'
+  description: "Prevents unauthorized users from altering the framework's configuration"
+  restrict access: TRUE

@@ -1,16 +1,16 @@
-# Janus
-A Drupal 8 module to make use of the [Janus AB library](https://bitbucket.org/synetic/janus-ab).  
-This library provides both service definitions of the library's classes, and offers utility classes to make use of the 
-classes found within the libray. 
+# JanusAB
+A Drupal 8 module to make use of the [Janus AB library](https://bitbucket.org/synetic/janus-ab-lib).  
+The Drupal module provides both service definitions of the library's classes, and offers utility classes to make use of the 
+classes found within the library. It also adds the ability to configure the framework through configforms.  
 
 Due to the nature of Drupal, it is not possible for the module to allow fully configured AB-testing without developer
-input. If you are not capable of writing the code required to implement the right hooks, it is highly recommend to
+input. If you are not capable of writing the code required to implement the right theming hooks, it is highly recommend to
 **not** use this module on your site.
 
 ## Installation
 Install using composer.
 ```
-composer require synetic/janus ^1.0.0
+composer require synetic/janus-ab ^1.0.0
 ```
 
 ## Key concepts
@@ -25,7 +25,7 @@ These goals vary based on a sites goals and targets.
 For example, blogging sites may create goals like "A user signs up for the mailing list".
 E-commerce sites may create more monetary based goals such as: "A user buys a product".
 
-This data is gathered by doing Experiments. Each experiment defines it's start- and end date, and has a few variations
+This data is gathered by doing experiments. Each experiment defines it's start- and end date, and has a few variations
 used in the experiment.
 Furthermore, an experiment must relate to a goal, and target a specific element of a website.
 
@@ -68,7 +68,8 @@ Based on this data, the company can then implement the variation, enjoying an in
 
 ### Keep it small
 The first mistake many novice AB-testers make is to test everything at once!
-You should attempt to keep your tests relatively small.
+You should attempt to keep your tests relatively small. That means that you should not make an excessive
+amount of variations.
    
 The main reason for this is that even if the changes are successful, we get confusing insights into what the cause of 
 the improvement actually was. A chance exists that the layout change was terrible, and reduced the conversion rate 
@@ -77,7 +78,8 @@ This means that while we can see that our conversion rate has increased by 90%, 
 due to our layout changes. If we then apply the same layout to the rest of our site, conversions may drop dramatically
 even though our previously gathered data seems to back up the choice to change the layout.
 
-A guideline to follow here is to only have your experiment affect a single part of your website. 
+A guideline to follow here is to only have your experiment affect a single part of your website.  
+This means that within an experiment you should make changes like:
 - Restructure the layout of your home page.
 - Change the call to action
 - etc.
@@ -107,7 +109,8 @@ the start of the experiment, simply because those users who would create a conve
 mostly placed into that variation.  
 Over time this stabilizes. This reduction of chance over time is called "Regression towards the mean".
 
-![Regression towards the mean in AB-tests](docs/images/ab-test-regression-to-the-mean.jpg "Regression to the mean example")
+![Regression towards the mean in AB-tests](docs/images/ab-test-regression-to-the-mean.jpg "Regression to the mean example")  
+[Source](https://instapage.com/blog/validating-ab-tests)  
 
 In the example image we see that the original initially appeared to perform much better than the variation,
 but once time had passed, the variation ended up as the better choice.
@@ -120,7 +123,7 @@ appears better at first, but actually performs much worse than the original.
 Similar to keeping it small, running several experiments on the same site at the same time will have a high likelihood
 of introducing contamination between experiments. Especially if these experiments are part of the same user journey
 through the site. If one experiment focuses on changing the homepage, and another on changing the checkout process
-for a webshop, there can be no guarantee that either experiment is the result of conversion increases.  
+for a webshop, there can be no guarantee that either experiment is the cause of conversion increases.  
 In this case, there existence of multiple experiments in the same user journey ensures that neither experiment will
 get us useful data. 
 
@@ -189,6 +192,7 @@ The configuration page allows us to configure the following things:
 - The vendor name
 - The site name
 - POST urls for logging success and traffic events
+- The Google Universal Analytics id.
 - Experiments
 
 Lets take a closer look at these, starting with the vendor and site name.
@@ -223,6 +227,12 @@ Examples of valid urls are:
 
 The validation for these fields enforces that the url must start with either a `/` or `http`. 
 Any other formats are not supported out of the box.   
+
+#### Google Analytics id
+![Analytics id](docs/images/janus-configuration-highlight-analytics-id.png)  
+The analytics id is the id found for your specific instance of Google Universal Analytics. 
+This id is used to send the data to your Google Analytics, and not someone else's.  
+Information about the location of this id within Google Analytics is found in the next chapter of this document.
 
 #### Experiments
 ![Experiment](docs/images/janus-configuration-experiment.png)
@@ -457,15 +467,15 @@ This is of course unacceptable.
 
 To solve the issue of Drupal internal caching, two additional modules come bundled into the repository, to be turned on 
 depending on which internal caches are active.
-### Dynamic Page Cache Module
-For the [Internal Dynamic Page Cache](https://www.drupal.org/docs/8/core/modules/dynamic-page-cache) we offer the
-creatively named Janus Dynamic Page Cache module. This module does one thing, which is overwrite the internal dynamic
-page cache service with its own extension that is capable of doing AB-tests.
+### Render Cache Module
+For the [Render Page Cache](https://www.drupal.org/docs/8/api/render-api/cacheability-of-render-arrays) we offer the
+creatively named Janus Render Cache module. This module does one thing, which is overwrite the render cache service with its own extension that is capable of doing AB-tests.
+This cache is almost always active, and is used by the Dynamic Page Cache.
 
-**Turn this on when you are using the internal dynamic page cache!**
+**Turn this on when you are using the render cache! \(Almost always)**
  
 ### Page Cache Module
-Similarly, to the Janus Dynamic Page Cache module, the Janus Page Cache Module overwrites the 
+Similarly, to the Janus Render Cache module, the Janus Page Cache Module overwrites the 
 [Internal Page Cache](https://www.drupal.org/docs/8/core/modules/page-cache) to let it work for AB-tests.
 
 **Turn this on when you are using the internal page cache!**

@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\Reference;
 /**
  * Service Provider / Modifier responsible for replacing services.
  *
- * Replaces the PageCache service with the Janus override.
+ * Replaces the RenderCache service with the Janus override.
  * This ensures that the internal page cache is no longer called in the caching
  * process, allowing for the caching of variations.
  */

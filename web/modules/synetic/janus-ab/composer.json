@@ -9,6 +9,7 @@
   }],
   "require": {
     "drupal/core":                           "~8.5",
+    "jaybizzle/crawler-detect":              "^1.2",
     "synetic/janus-ab-lib":                  "^1.1.0",
     "theiconic/php-ga-measurement-protocol": "^2.7.1"
   },
@@ -25,8 +26,8 @@
   "autoload-dev": {
     "psr-4": {
       "Drupal\\janus_ab\\":           "tests/",
-      "Drupal\\janus_render_cache\\": "modules/janus_render_cache/tests/",
-      "Drupal\\janus_page_cache\\":   "modules/janus_page_cache/tests/"
+      "Drupal\\janus_render_cache\\": "modules/janus_dynamic_page_cache/tests/",
+      "Drupal\\janus_page_cache\\":   "modules/janus_render_cache/tests/"
     }
   },
   "minimum-stability": "dev"

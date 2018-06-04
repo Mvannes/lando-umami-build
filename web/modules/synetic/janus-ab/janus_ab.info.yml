@@ -1,6 +1,6 @@
 name: 'Janus AB-testing'
 type: module
-description: 'Provides generic AB-testing functionality'
+description: 'Provides generic AB-testing functionality.'
 core: 8.x
 package: 'JanusAB'
-configure: 'janus.admin_settings'
+configure: 'janus_ab.admin_settings'

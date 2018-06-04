@@ -82,4 +82,3 @@ class LoggingRouteCreatorTest extends TestCase {
   }
 
 }
-

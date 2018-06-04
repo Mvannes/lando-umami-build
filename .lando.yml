@@ -86,8 +86,8 @@ events:
   post-start:
     # This will improve composer install speed, from 4 min to 30 seconds at least with a full composer install
     # on a drupal project.
-    # - appserver: composer global require hirak/prestissimo
-    # - appserver: cd $LANDO_MOUNT && composer install
+     - appserver: composer global require hirak/prestissimo
+     - appserver: cd $LANDO_MOUNT && composer install
 
     # If you use a theme with it's own composer management, when using pattern lab for instance, uncomment this.
     #- appserver: cd $LANDO_MOUNT/web/themes/custom/PROJECT_NAME && composer install

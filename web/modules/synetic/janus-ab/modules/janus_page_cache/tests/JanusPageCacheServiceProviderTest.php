@@ -2,10 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\janus_page_cache;
+namespace Drupal\janus_dynamic_page_cache;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\janus_page_cache\Cache\JanusABPageCache;
+use Drupal\janus_page_cache\JanusPageCacheServiceProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;

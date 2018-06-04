@@ -1,4 +1,6 @@
 services:
+  jaybizzle.crawler_detect:
+    class: Jaybizzle\CrawlerDetect\CrawlerDetect
   janus_ab.cookie_jar_factory:
     class: Drupal\janus_ab\Cookie\CookieJarFactory
   janus_ab.cookie_jar:
@@ -12,9 +14,9 @@ services:
     factory: ['@janus_ab.config_factory', create]
   janus_ab.variation_picker_factory:
     class: Drupal\janus_ab\Variation\VariationPickerFactory
-    arguments: ['@janus_ab.ab_config', '@janus_ab.cookie_jar']
+    arguments: ['@janus_ab.ab_config', '@janus_ab.cookie_jar', '@request_stack', '@jaybizzle.crawler_detect']
   janus_ab.variation_picker:
-    class: Synetic\JanusAB\Variation\VariationPicker
+    class: Synetic\JanusAB\Variation\VariationPickerInterface
     factory: ['@janus_ab.variation_picker_factory', create]
   janus_ab.janus_extension:
     class: Drupal\janus_ab\Twig\JanusExtension

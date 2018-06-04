@@ -37,4 +37,5 @@ interface LoggingControllerInterface {
    *   A response. Always returns status 200, empty body.
    */
   public function logSuccessAction(Request $request): Response;
+
 }
