@@ -25,7 +25,7 @@ class CrawlerAwareVariationPickerTest extends TestCase {
    * @return array
    *   The array of provided test cases
    */
-  public function pickVariationForExperimentWhenCrawlerProvider(): array {
+  public function crawlerUserAgentProvider(): array {
     return [
       [
         'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
@@ -120,7 +120,7 @@ class CrawlerAwareVariationPickerTest extends TestCase {
    * @param string $userAgent
    *   The user agent to check. Is always a common bot.
    *
-   * @dataProvider pickVariationForExperimentWhenCrawlerProvider
+   * @dataProvider crawlerUserAgentProvider
    */
   public function testPickVariationForExperimentWhenCrawler(
     string $userAgent
@@ -146,6 +146,46 @@ class CrawlerAwareVariationPickerTest extends TestCase {
     $experiment->getVariations()->willReturn([$variation, $notThisVariation]);
 
     $result = $picker->pickVariationForExperiment($experiment->reveal());
+
+    self::assertSame($variation, $result);
+  }
+
+  /**
+   * Test the picking of variations when the user is in fact a bot.
+   *
+   * This should always return the first variation configured in an experiment.
+   *
+   * @param string $userAgent
+   *   The user agent to check. Is always a common bot.
+   *
+   * @dataProvider crawlerUserAgentProvider
+   */
+  public function testPickVariationForExperimentAndRequestWhenCrawler(
+    string $userAgent
+  ): void {
+    $cookieJar     = $this->prophesize(CookieJarInterface::class);
+    $config        = $this->prophesize(ABConfigInterface::class);
+    $requestStack  = $this->prophesize(RequestStack::class);
+    $crawlerDetect = new CrawlerDetect();
+    $request       = new Request();
+    $request->headers->set('User-Agent', $userAgent);
+    $cookieJar->getCookie(Argument::any())->shouldNotBeCalled();
+    $picker = new CrawlerAwareVariationPicker(
+      $cookieJar->reveal(),
+      $config->reveal(),
+      $requestStack->reveal(),
+      $crawlerDetect
+    );
+
+    $experiment = $this->prophesize(ExperimentInterface::class);
+    $variation = new Variation('0', 'a');
+    $notThisVariation = new Variation('1', 'b');
+    $experiment->getVariations()->willReturn([$variation, $notThisVariation]);
+
+    $result = $picker->pickVariationForExperimentAndRequest(
+      $experiment->reveal(),
+      $request
+    );
 
     self::assertSame($variation, $result);
   }

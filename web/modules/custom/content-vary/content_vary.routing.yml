@@ -1,0 +1,7 @@
+content_vary.content:
+  path: '/vary'
+  defaults:
+    _controller: '\Drupal\content_vary\Controller\VaryController::content'
+    _title: 'Vary me'
+  requirements:
+    _permission: 'access content'

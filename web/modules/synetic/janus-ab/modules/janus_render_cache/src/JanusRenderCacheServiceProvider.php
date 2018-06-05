@@ -33,7 +33,10 @@ class JanusRenderCacheServiceProvider implements ServiceModifierInterface {
       ->addArgument(new Reference('cache_contexts_manager'))
       ->addArgument(new Reference('render_placeholder_generator'))
       ->addArgument(new Reference('janus_ab.ab_config'))
-      ->addArgument(new Reference('janus_ab.variation_picker'));
+      ->addMethodCall(
+        'setVariationPicker',
+        [new Reference('janus_ab.variation_picker')]
+      );
 
     $container->setDefinition('render_cache', $definition);
   }

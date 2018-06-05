@@ -10,6 +10,7 @@ use Drupal\Core\Render\PlaceholderGeneratorInterface;
 use Drupal\Core\Render\PlaceholderingRenderCache;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Synetic\JanusAB\Config\ABConfigInterface;
+use Synetic\JanusAB\Variation\Variation;
 use Synetic\JanusAB\Variation\VariationPickerInterface;
 
 /**
@@ -44,16 +45,13 @@ class JanusABRenderCache extends PlaceholderingRenderCache {
    *   PlaceholderGenerator to generate placeholders.
    * @param \Synetic\JanusAB\Config\ABConfigInterface $config
    *   ABConfig to check if experiments exist.
-   * @param \Synetic\JanusAB\Variation\VariationPickerInterface $variationPicker
-   *   Used to choose the correct variation for a user.
    */
   public function __construct(
     RequestStack $requestStack,
     CacheFactoryInterface $cacheFactory,
     CacheContextsManager $cacheContextsManager,
     PlaceholderGeneratorInterface $placeholderGenerator,
-    ABConfigInterface $config,
-    VariationPickerInterface $variationPicker
+    ABConfigInterface $config
   ) {
     parent::__construct(
       $requestStack,
@@ -62,6 +60,34 @@ class JanusABRenderCache extends PlaceholderingRenderCache {
       $placeholderGenerator
     );
     $this->config = $config;
+  }
+
+  /**
+   * Late init setter to avoid container compilation issues.
+   *
+   * This setter should be called as part of the creation of this service using
+   * a "methodcall". This is required because of how early in the request the
+   * render cache is created. If one were to inject the VariationPicker as part
+   * of the constructor, the reference to the RequestStack object is still null.
+   * This means that a VariationPicker that makes use of the RequestStack such
+   * as the one used here, will throw null reference errors.
+   *
+   * By using the setVariationPicker function, the RenderCache has been
+   * initialized, and so has the RequestStack object that is injected into it.
+   * If we inject the VariationPicker here, it will be constructed with the
+   * correct RequestStack reference.
+   *
+   * Because the RenderCache is a service, we can ensure that the
+   * setVariationPicker function is always called during its initialization.
+   * This should be ensured, as without this object being set, the class will
+   * not work.
+   *
+   * @param \Synetic\JanusAB\Variation\VariationPickerInterface $variationPicker
+   *   The variation picker to use in choosing variations.
+   */
+  public function setVariationPicker(
+    VariationPickerInterface $variationPicker
+  ): void {
     $this->variationPicker = $variationPicker;
   }
 
@@ -73,7 +99,9 @@ class JanusABRenderCache extends PlaceholderingRenderCache {
     // and variation ids to ensure user's caching works correctly.
     if ($this->config->hasActiveExperiment()) {
       $experiment = $this->config->getActiveExperiment();
-      $variation = $this->variationPicker->pickVariationForExperiment($experiment);
+      $variation  = $this->variationPicker->pickVariationForExperiment(
+        $experiment
+      );
       $elements['#cache']['context'][] = $experiment->getId();
       $elements['#cache']['context'][] = $variation->getId();
     }

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Drupal\janus_ab\Variation;
 
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Synetic\JanusAB\Config\ABConfigInterface;
 use Synetic\JanusAB\Cookie\CookieJarInterface;
@@ -24,9 +25,9 @@ class CrawlerAwareVariationPicker extends VariationPicker {
   /**
    * The current request, used for its user agent.
    *
-   * @var \Symfony\Component\HttpFoundation\Request
+   * @var \Symfony\Component\HttpFoundation\RequestStack
    */
-  private $request;
+  private $requestStack;
 
   /**
    * Detector for recognizing crawlers.
@@ -60,7 +61,7 @@ class CrawlerAwareVariationPicker extends VariationPicker {
     RequestStack $requestStack,
     CrawlerDetect $crawlerDetect
   ) {
-    $this->request = $requestStack->getCurrentRequest();
+    $this->requestStack = $requestStack;
     $this->crawlerDetect = $crawlerDetect;
     parent::__construct($cookieJar, $config);
   }
@@ -71,7 +72,40 @@ class CrawlerAwareVariationPicker extends VariationPicker {
   public function pickVariationForExperiment(
     ExperimentInterface $experiment
   ): VariationInterface {
-    $userAgent = $this->request->headers->get(self::USER_AGENT_KEY);
+    $request   = $this->requestStack->getCurrentRequest();
+    $userAgent = $request->headers->get(self::USER_AGENT_KEY);
+    if ($this->crawlerDetect->isCrawler($userAgent)) {
+      return $experiment->getVariations()[0];
+    }
+    return parent::pickVariationForExperiment($experiment);
+  }
+
+  /**
+   * Chooses a Variation from the given Experiment using the request's UA.
+   *
+   * Uses the given Request to determine if the visiting user is a bot by
+   * comparing its "User-Agent" header against known bot user agents.
+   * If the user is a bot, the control variation is always returned.
+   * If the user is not a bot, a random variation is chosen.
+   *
+   * This is done to ensure that SEO crawlers are always presented with the
+   * same site.
+   * Should be used over the "pickVariationForExperiment" function if there is
+   * no RequestStack available, or if the RequestStack will always be empty.
+   *
+   * @param \Synetic\JanusAB\Variation\ExperimentInterface $experiment
+   *   The Experiment to take variations from.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request whose User-Agent header will be parsed.
+   *
+   * @return \Synetic\JanusAB\Variation\VariationInterface
+   *   The chosen VariationInterface object.
+   */
+  public function pickVariationForExperimentAndRequest(
+    ExperimentInterface $experiment,
+    Request $request
+  ): VariationInterface {
+    $userAgent = $request->headers->get(self::USER_AGENT_KEY);
     if ($this->crawlerDetect->isCrawler($userAgent)) {
       return $experiment->getVariations()[0];
     }
