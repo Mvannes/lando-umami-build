@@ -83,7 +83,7 @@ class GoogleAnalyticsStorageHandler implements DataStorageHandlerInterface {
    */
   public function storeData(StorageDataInterface $data): void {
     $this->analytics->setProtocolVersion(self::PROTOCOL_VERSION)
-      ->setTrackingId($this->abConfig->getAnalyticsId())
+      ->setTrackingId($this->abConfig->getTrackingId())
       ->setClientId($data->getUserId())
       ->setExperimentId($data->getExperimentId())
       ->setExperimentVariant($data->getVariationId())

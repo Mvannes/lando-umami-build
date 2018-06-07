@@ -68,7 +68,7 @@ class ABConfigFactory implements ABConfigFactoryInterface {
       (string) $this->config->get('siteName'),
       (string) $this->config->get('trafficUrl'),
       (string) $this->config->get('successUrl'),
-      (string) $this->config->get('analyticsId'),
+      (string) $this->config->get('trackingId'),
       $experimentObjects
     );
 

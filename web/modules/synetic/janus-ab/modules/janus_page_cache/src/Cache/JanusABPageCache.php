@@ -80,7 +80,7 @@ class JanusABPageCache extends PageCache {
       return parent::getCacheId($request);
     }
     $experiment = $this->config->getActiveExperiment();
-    $variation  = $this->variationPicker
+    $variation = $this->variationPicker
       ->pickVariationForExperimentAndRequest($experiment, $request);
 
     $cid_parts = [

@@ -10,7 +10,7 @@
   "require": {
     "drupal/core":                           "~8.5",
     "jaybizzle/crawler-detect":              "^1.2",
-    "synetic/janus-ab-lib":                  "^1.1.0",
+    "synetic/janus-ab-lib":                  "^1.1.1",
     "theiconic/php-ga-measurement-protocol": "^2.7.1"
   },
   "require-dev": {

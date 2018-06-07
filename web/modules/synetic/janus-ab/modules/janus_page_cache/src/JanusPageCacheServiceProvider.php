@@ -50,8 +50,6 @@ class JanusPageCacheServiceProvider implements ServiceModifierInterface {
       ->addArgument(new Reference('janus_ab.crawler_aware_variation_picker'))
       ->addTag('http_middleware', ['priority' => 200, 'responder' => TRUE]);
     $container->setDefinition('http_middleware.page_cache', $cacheDefinition);
-
-
   }
 
 }

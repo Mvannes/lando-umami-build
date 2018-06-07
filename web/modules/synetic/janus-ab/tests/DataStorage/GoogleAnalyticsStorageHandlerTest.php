@@ -61,7 +61,7 @@ class GoogleAnalyticsStorageHandlerTest extends TestCase {
    * Test storing basic data.
    */
   public function testStoreData(): void {
-    $this->abConfig->getAnalyticsId()->willReturn('UA-1234567890');
+    $this->abConfig->getTrackingId()->willReturn('UA-1234567890');
 
     $data = new StorageData(
       'exp',

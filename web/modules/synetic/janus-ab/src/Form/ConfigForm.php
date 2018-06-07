@@ -132,11 +132,11 @@ class ConfigForm extends ConfigFormBase {
       '#default_value' => $config->get('successUrl'),
     ];
 
-    $form['analyticsId'] = [
+    $form['trackingId'] = [
       '#type'          => 'textfield',
       '#title'         => 'Google Analytics id',
       '#required'      => TRUE,
-      '#default_value' => $config->get('analyticsId'),
+      '#default_value' => $config->get('trackingId'),
     ];
 
     // Add experiments.
@@ -677,7 +677,7 @@ class ConfigForm extends ConfigFormBase {
       ->set('trafficUrl', $trafficUrl)
       ->set('successUrl', $successUrl)
       ->set('experiments', $experiments)
-      ->set('analyticsId', $form_state->getValue('analyticsId'))
+      ->set('trackingId', $form_state->getValue('trackingId'))
       ->save();
 
     parent::submitForm($form, $form_state);

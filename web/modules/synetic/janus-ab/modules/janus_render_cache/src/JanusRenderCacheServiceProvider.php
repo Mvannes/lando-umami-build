@@ -37,7 +37,6 @@ class JanusRenderCacheServiceProvider implements ServiceModifierInterface {
         'setVariationPicker',
         [new Reference('janus_ab.variation_picker')]
       );
-
     $container->setDefinition('render_cache', $definition);
   }
 

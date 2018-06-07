@@ -228,9 +228,9 @@ Examples of valid urls are:
 The validation for these fields enforces that the url must start with either a `/` or `http`. 
 Any other formats are not supported out of the box.   
 
-#### Google Analytics id
+#### Google Analytics tracking id
 ![Analytics id](docs/images/janus-configuration-highlight-analytics-id.png)  
-The analytics id is the id found for your specific instance of Google Universal Analytics. 
+The tracking id is the id found for your specific instance of Google Universal Analytics. 
 This id is used to send the data to your Google Analytics, and not someone else's.  
 Information about the location of this id within Google Analytics is found in the next chapter of this document.
 

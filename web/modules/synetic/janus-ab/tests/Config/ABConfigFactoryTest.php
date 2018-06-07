@@ -62,7 +62,7 @@ class ABConfigFactoryTest extends TestCase {
     $config->get('siteName')->willReturn('site');
     $config->get('trafficUrl')->willReturn('/url');
     $config->get('successUrl')->willReturn('/surl');
-    $config->get('analyticsId')->willReturn('UA-Coolest-id-ever');
+    $config->get('trackingId')->willReturn('UA-Coolest-id-ever');
 
     $configFactory = $this->prophesize(ConfigFactoryInterface::class);
     $configFactory->get('janus_ab.settings')->willReturn($config->reveal());

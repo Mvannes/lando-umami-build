@@ -28,7 +28,8 @@ class CrawlerAwareVariationPickerTest extends TestCase {
   public function crawlerUserAgentProvider(): array {
     return [
       [
-        'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+        'Mozilla/5.0 (compatible; Googlebot/2.1; 
+        +http://www.google.com/bot.html)',
       ],
       [
         'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) 
@@ -37,7 +38,8 @@ class CrawlerAwareVariationPickerTest extends TestCase {
          (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
       ],
       [
-        '(compatible; Mediapartners-Google/2.1; +http://www.google.com/bot.html)',
+        '(compatible; Mediapartners-Google/2.1; 
+        +http://www.google.com/bot.html)',
       ],
       [
         'Mozilla/5.0 (compatible; 

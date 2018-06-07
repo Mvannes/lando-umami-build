@@ -13,9 +13,9 @@ janus_ab.config:
     successUrl:
       type: string
       label: 'The fully qualified url used for logging success'
-    analyticsId:
+    trackingId:
       type: string
-      label: 'The Google Analytics id E.g. "UA-XXXXXXXXX-X"'
+      label: 'The Google Analytics tracking id E.g. "UA-XXXXXXXXX-X"'
     experiments:
       type: mapping
       label: 'The experiments that should be ran. No concurring experiments'
