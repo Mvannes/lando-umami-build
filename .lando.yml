@@ -2,6 +2,7 @@ name: demo-umami
 recipe: drupal8
 proxy:
   nginx:
+  cache:
     - build-umami.localhost
   # mailhog:
   #   - mailhog.build-umami.localhost
@@ -9,8 +10,8 @@ proxy:
   #   - solr.build-umami.localhost:8983
   # docs:
   #   - docs.build-umami.localhost
-  node:
-    - node.build-umami.localhost:3000
+#  node:
+#    - node.build-umami.localhost:3000
 
 config:
   php: '7.1'
@@ -28,7 +29,7 @@ services:
          # In this case we want to override the default container setup to ignore directories, such as the vendor
          # library, which is not necessary to be synced with the OS environment and this container.
          volumes:
-           - /app/vendor/
+#           - /app/vendor/
            - /app/documentation/
          # All the way down in this configuration we added a compose file containing shared volumes. These volumes
          # contain the public and private file directories. We do not want them synced with drupal but we do want them
@@ -49,28 +50,65 @@ services:
   # To allow (frontend) developers to use cool tools based on node, yarn and gulp, we add this container. This could be
   # used to generate css from scss or integrate with browsersync to reload your browser pages when changes are detected.
   # https://docs.devwithlando.io/services/node.html
-  node:
-    type: node:8.4
-    build:
-      - "yarn global add gulp-cli@latest yo@latest"
-    overrides:
-       services:
-         volumes:
-         # This will prevent syncing between OS and this container within these container directories. Improves
-         # file sync speed within docker.
-           - /app/vendor/
-           - /app/documentation/
-           - /app/files
-
+#  node:
+#    type: node:8.4
+#    build:
+#      - "yarn global add gulp-cli@latest yo@latest"
+#    overrides:
+#       services:
+#         volumes:
+#         # This will prevent syncing between OS and this container within these container directories. Improves
+#         # file sync speed within docker.
+#           - /app/vendor/
+#           - /app/documentation/
+#           - /app/files
+  cache:
+    type: varnish:4.1
+    # Specify the backend(s) that varnish should attempt to connect to
+    #
+    # This can be an array or string and should be the names of other services
+    # provided directly by this file or by a recipe. You can discover the services
+    # your app has by running `lando info`
+    #
+    backends:
+      - nginx
+    # Optionally spin up another nginx instance so that you can secure your
+    # traffic over ssl.
+    #
+    # The varnish ssl service will be called NAME_ssl, or cache_ssl in this
+    # example.
+    #
+    ssl: true
+    # Optionally load in a custom vcl file. This is relative to the app root
+    #
+    # You will not need to import the standard library or manage backends in this
+    # file. Those are handled automatically.
+    #
+    vcl: config/shared/varnish/default.vcl
 tooling:
-  npm:
-    service: node
-  node:
-    service: node
-  yarn:
-    service: node
-  gulp:
-    service: node
+  varnishadm:
+    service: cache
+    user: root
+  varnishstat:
+    service: cache
+    user: root
+  varnishlog:
+    service: cache
+    user: root
+  varnishtop:
+    service: cache
+    user: root
+  varnishncsa:
+    service: cache
+    user: root
+#  npm:
+#    service: node
+#  node:
+#    service: node
+#  yarn:
+#    service: node
+#  gulp:
+#    service: node
 
 # Add in some custom event scripting. All available command line tools have a post event automatically defined.
 # For instance the above phantomsjs and phpunit tooling will have a post-phantomjs and post-phpunit event which can be
@@ -86,8 +124,8 @@ events:
   post-start:
     # This will improve composer install speed, from 4 min to 30 seconds at least with a full composer install
     # on a drupal project.
-     - appserver: composer global require hirak/prestissimo
-     - appserver: cd $LANDO_MOUNT && composer install
+#     - appserver: composer global require hirak/prestissimo
+#     - appserver: cd $LANDO_MOUNT && composer install
 
     # If you use a theme with it's own composer management, when using pattern lab for instance, uncomment this.
     #- appserver: cd $LANDO_MOUNT/web/themes/custom/PROJECT_NAME && composer install
