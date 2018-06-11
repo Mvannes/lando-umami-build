@@ -20,7 +20,7 @@ function content_vary_block_view_alter(array &$build, \Drupal\Core\Block\BlockPl
   // Get the active experiment, because we know it exists.
   $experiment = $abConfig->getActiveExperimentById('cool-id');
   // Pick a variation, the variationPicker internals will ensure that this is the correct variation for each user.
-  $variation = $variationPicker->pickVariationForExperiment($experiment);
+    $variation = $variationPicker->pickVariationForExperiment($experiment);
 
   if ($variation->getId() === '1') {
     $entity->setConfigurationValue('promo_title', 'The Umami Food Magazine!');
