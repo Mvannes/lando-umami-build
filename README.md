@@ -5,8 +5,9 @@ For more information including installation instructions visit [The Out of the B
 ## Usage
 
 ```
-composer install
-cd web
-drush si demo_umami --account-pass=pass --account-mail="your-email@example.com"
-drush en demo_umami_content -y
+lando composer install
+lando drush si demo_umami --account-pass=pass --account-mail="your-email@example.com"
+lando drush en demo_umami_content -y
 ```
+
+Edited to work with [Lando](https://docs.devwithlando.io/). Temporarily using this repo to clone between machines, not making a pull request :)
