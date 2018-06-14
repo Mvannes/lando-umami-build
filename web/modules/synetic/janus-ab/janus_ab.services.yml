@@ -46,7 +46,3 @@ services:
   janus_ab.request_handler:
     class: Drupal\janus_ab\Routing\JanusRequestHandler
     arguments: ['@janus_ab.ab_config', '@http_client']
-  janus_ab.response_subscriber:
-    class: Drupal\janus_ab\Routing\ResponseSubscriber
-    tags:
-      - { name: event_subscriber }
