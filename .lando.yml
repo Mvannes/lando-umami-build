@@ -78,7 +78,7 @@ services:
     # The varnish ssl service will be called NAME_ssl, or cache_ssl in this
     # example.
     #
-    ssl: true
+#    ssl: true
     # Optionally load in a custom vcl file. This is relative to the app root
     #
     # You will not need to import the standard library or manage backends in this

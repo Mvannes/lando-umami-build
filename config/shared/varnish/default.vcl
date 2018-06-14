@@ -28,8 +28,6 @@ sub vcl_recv {
     return (pass);
   }
 
-  std.log("MICHAEL IS HIER " + req.http.Cookie);
-
   ## Remove has_js and Google Analytics cookies.
   set req.http.Cookie = regsuball(req.http.Cookie, "(^|;\s*)(__[a-z]+)=[^;]*", "");
 
@@ -70,6 +68,17 @@ sub vcl_recv {
 
   set req.http.X-SYNETIC-COOKIE-NO-SESS = regsuball(req.http.Cookie, "(^|; ) *SESS[A-Za-z0-9=]+;? *", "\1");
 
+  # Check for JanusAB test cookies, if they exist, remove the unique id one.
+  if (req.http.Cookie ~ "([!-~]*)(_)([!-~]*)(_)([!-~]*)(=)([!-~]*)" &&
+    req.http.Cookie ~ "([!-~]*)(_)([!-~]*)(_)([!-~]*)(_)(ID)(=)([!-~]*)") {
+    set req.http.X-JANUS-EXPERIMENT-COOKIE = regsuball(
+      req.http.Cookie,
+      "([!-~]*)(_)([!-~]*)(_)([!-~]*)(_)(ID)(=)([!-~]*)",
+      ""
+    );
+  } else {
+    set req.http.X-JANUS-EXPERIMENT-COOKIE = "-1";
+  }
   return(hash);
 }
 
@@ -85,6 +94,9 @@ sub vcl_hash {
   hash_data(req.url);
   hash_data(req.http.host);
   hash_data(req.http.Front-End-Https);
+
+  hash_data(req.http.X-JANUS-EXPERIMENT-COOKIE);
+  unset req.http.X-JANUS-EXPERIMENT-COOKIE;
 
   ## add the cookie to the hash
   # set req.hash += req.http.X-SYNETIC-COOKIE-NO-SESS;
@@ -107,5 +119,6 @@ sub vcl_deliver {
   } else {
     set resp.http.X-Cache = "MISS";
   }
+
   return(deliver);
 }
