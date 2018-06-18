@@ -13,7 +13,7 @@ use Synetic\JanusAB\Variation\VariationInterface;
  *
  * Wraps around manual request creation to ensure requests are correctly formed.
  */
-interface JanusRequestHandlerInterface {
+interface JanusRequestClientInterface {
 
   /**
    * Create and send a traffic request to the configured traffic endpoint.

@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\Route;
 use Synetic\JanusAB\Config\ABConfigInterface;
 
-
 /**
  * @covers \Drupal\janus_ab\Routing\LoggingRouteCreator
  */

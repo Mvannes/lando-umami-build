@@ -15,14 +15,14 @@ use Synetic\JanusAB\Variation\Experiment;
 use Synetic\JanusAB\Variation\Variation;
 
 /**
- * @covers \Drupal\janus_ab\Routing\JanusRequestHandler
+ * @covers \Drupal\janus_ab\Routing\JanusRequestClient
  */
-class JanusRequestHandlerTest extends TestCase {
+class JanusRequestClientTest extends TestCase {
 
   /**
    * The request handler under test.
    *
-   * @var \Drupal\janus_ab\Routing\JanusRequestHandler
+   * @var \Drupal\janus_ab\Routing\JanusRequestClient
    */
   private $handler;
 
@@ -47,7 +47,7 @@ class JanusRequestHandlerTest extends TestCase {
     $this->config = $this->prophesize(ABConfigInterface::class);
     $this->client = $this->prophesize(ClientInterface::class);
 
-    $this->handler = new JanusRequestHandler(
+    $this->handler = new JanusRequestClient(
       $this->config->reveal(),
       $this->client->reveal()
     );
@@ -105,13 +105,13 @@ class JanusRequestHandlerTest extends TestCase {
         'form_params' => [
           'experiment' => 'id',
           'variation'  => '0',
-          'userId'     => 'id'
+          'userId'     => 'id',
         ],
-        'http_errors' => false,
-        'timeout'     => 2, // Timeout if no response in 2 seconds.
+        'http_errors' => FALSE,
+        // Timeout if no response in 2 seconds.
+        'timeout'     => 2,
       ]
     )->shouldBeCalled()->willReturn($response);
-
 
     self::assertSame(
       $response, $this->handler->doTrafficRequest(
@@ -136,13 +136,13 @@ class JanusRequestHandlerTest extends TestCase {
         'form_params' => [
           'experiment' => 'id',
           'variation'  => '0',
-          'userId'     => 'id'
+          'userId'     => 'id',
         ],
-        'http_errors' => false,
-        'timeout'     => 2, // Timeout if no response in 2 seconds.
+        'http_errors' => FALSE,
+        // Timeout if no response in 2 seconds.
+        'timeout'     => 2,
       ]
     )->shouldBeCalled()->willReturn($response);
-
 
     self::assertSame(
       $response, $this->handler->doSuccessRequest(

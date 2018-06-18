@@ -15,8 +15,7 @@ use Synetic\JanusAB\Variation\VariationPickerInterface;
 /**
  * Twig extension that allows use of JanusAB functions in Twig.
  */
-class JanusExtension extends \Twig_Extension
-{
+class JanusExtension extends \Twig_Extension {
   /**
    * Variation picker for picking variations.
    *

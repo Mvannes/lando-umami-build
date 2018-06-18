@@ -7,7 +7,6 @@ namespace Drupal\janus_page_cache;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
 use Drupal\janus_ab\Variation\CrawlerAwareVariationPicker;
-use Drupal\janus_ab\Variation\VariationPickerFactoryInterface;
 use Drupal\janus_page_cache\Cache\JanusABPageCache;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;

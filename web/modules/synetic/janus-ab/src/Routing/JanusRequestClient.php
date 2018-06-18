@@ -4,9 +4,7 @@ declare(strict_types = 1);
 
 namespace Drupal\janus_ab\Routing;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 use Synetic\JanusAB\Config\ABConfigInterface;
 use Synetic\JanusAB\Variation\ExperimentInterface;
@@ -17,10 +15,10 @@ use Synetic\JanusAB\Variation\VariationInterface;
  *
  * Wraps around manual request creation to ensure requests are correctly formed.
  */
-class JanusRequestHandler implements JanusRequestHandlerInterface {
+class JanusRequestClient implements JanusRequestClientInterface {
 
   /**
-   * The janus configuration to use.
+   * The Janus configuration to use.
    *
    * @var \Synetic\JanusAB\Config\ABConfigInterface
    */

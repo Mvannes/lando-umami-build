@@ -1,4 +1,5 @@
 <?php
+
 namespace Drupal\janus_ab\Variation;
 
 use Jaybizzle\CrawlerDetect\CrawlerDetect;

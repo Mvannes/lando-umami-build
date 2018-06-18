@@ -1,32 +1,38 @@
+/**
+ * @file
+ * Defines traffic logging behaviours for JanusAB
+ */
 (function ($, Drupal, drupalSettings) {
-    Drupal.behaviors.loggingTraffic = {
-        attach: function (context, settings) {
-            var moduleSettingsTraffic = drupalSettings.janus_ab.traffic;
+  "use strict";
+  /**
+   * This script does a "fire-and-forget" call to the configured traffic url.
+   *
+   * This url is found in the passed DrupalSettings, and is done once per page.
+   *
+   * @type {Drupal~behavior}
+   *
+   * @prop {Drupal~behaviorAttach} attach
+   *   Attaches behaviors for JanusAB logging related to success.
+   */
+  Drupal.behaviors.janusABLoggingTraffic = {
+    attach: function (context, settings) {
+      let moduleSettingsTraffic = drupalSettings.janus_ab.traffic;
+      let userId = $.cookie(moduleSettingsTraffic.userIdCookie);
 
-            // Early return if any variable is not set. This means that we can't do the request.
-            if (typeof moduleSettingsTraffic.experimentId === 'undefined' ||
-                typeof moduleSettingsTraffic.variationId === 'undefined' ||
-                typeof moduleSettingsTraffic.userIdCookie === 'undefined' ||
-                typeof moduleSettingsTraffic.trafficUrl === 'undefined') {
-s
-                return;
-            }
+      $('body', context).once('janusABLoggingTraffic').each(function () {
+        $.ajax({
+          url: moduleSettingsTraffic.trafficUrl,
+          async: true,
+          data: {
+            'experiment': moduleSettingsTraffic.experimentId,
+            'variation': moduleSettingsTraffic.variationId,
+            'userId': userId
+          },
+          type: 'POST'
+        });
 
-            var userId = $.cookie(moduleSettingsTraffic.userIdCookie)
+      });
+    }
+  };
 
-            $('body', context).once('loggingTraffic').each( function () {
-                $.ajax({
-                    url: moduleSettingsTraffic.trafficUrl,
-                    async: true,
-                    data: {
-                        'experiment': moduleSettingsTraffic.experimentId,
-                        'variation':  moduleSettingsTraffic.variationId,
-                        'userId':     userId
-                    },
-                    type: 'POST'
-                });
-
-            });
-        }
-    };
 })(jQuery, Drupal, drupalSettings);

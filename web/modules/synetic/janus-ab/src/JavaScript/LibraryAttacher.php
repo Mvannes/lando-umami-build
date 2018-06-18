@@ -71,24 +71,12 @@ class LibraryAttacher implements LibraryAttacherInterface {
     array $variables,
     string $experimentId
   ): array {
-    // If no active experiment is found, don't attach the library.
-    if (!$this->config->hasActiveExperimentWithId($experimentId)) {
-      return $variables;
-    }
-
-    $experiment = $this->config->getActiveExperimentById($experimentId);
-    $variation = $this->variationPicker->pickVariationForExperiment($experiment);
-
-    $variables['#attached']['library'][] = self::SUCCESS_LIBRARY;
-    $variables['#attached']['drupalSettings']['janus_ab']['success'] = [
-      'experimentId' => $experiment->getId(),
-      'variationId'  => $variation->getId(),
-      'successUrl'   => $this->config->getSuccessUrl(),
-      'userIdCookie' => $this->getUserIdCookieName($experiment),
-    ];
-
     // Return the updated array.
-    return $variables;
+    return $this->attachLibraryForExperimentId(
+      $variables,
+      $experimentId,
+      self::SUCCESS_LIBRARY
+    );
   }
 
   /**
@@ -98,23 +86,58 @@ class LibraryAttacher implements LibraryAttacherInterface {
     array $variables,
     string $experimentId
   ): array {
+    // Return the updated array.
+    return $this->attachLibraryForExperimentId(
+      $variables,
+      $experimentId,
+      self::TRAFFIC_LIBRARY
+    );
+  }
+
+  /**
+   * Attach either success or traffic libraries to render arrays.
+   *
+   * Generically handles it for both traffic and success libraries
+   * to avoid code duplication.
+   *
+   * @param array $variables
+   *   The variable array to be changed.
+   * @param string $experimentId
+   *   The experiment array to render.
+   * @param string $libraryName
+   *   The library to render, either traffic or success.
+   *
+   * @return array
+   *   The updated variables.
+   */
+  private function attachLibraryForExperimentId(
+    array  $variables,
+    string $experimentId,
+    string $libraryName
+  ): array {
     // If no active experiment is found, don't attach the library.
     if (!$this->config->hasActiveExperimentWithId($experimentId)) {
       return $variables;
     }
 
     $experiment = $this->config->getActiveExperimentById($experimentId);
-    $variation = $this->variationPicker->pickVariationForExperiment($experiment);
+    $variation  = $this->variationPicker->pickVariationForExperiment(
+      $experiment
+    );
+    $isTraffic = $libraryName === self::TRAFFIC_LIBRARY;
+    $urlKey    = $isTraffic ? 'trafficUrl' : 'successUrl';
+    $urlValue  = $isTraffic ?
+      $this->config->getTrafficUrl() :
+      $this->config->getSuccessUrl();
+    $settingsKey = $isTraffic ? 'traffic' : 'success';
 
-    $variables['#attached']['library'][] = self::TRAFFIC_LIBRARY;
-    $variables['#attached']['drupalSettings']['janus_ab']['traffic'] = [
+    $variables['#attached']['library'][] = $libraryName;
+    $variables['#attached']['drupalSettings']['janus_ab'][$settingsKey] = [
       'experimentId' => $experiment->getId(),
       'variationId'  => $variation->getId(),
-      'trafficUrl'   => $this->config->getTrafficUrl(),
+      $urlKey        => $urlValue,
       'userIdCookie' => $this->getUserIdCookieName($experiment),
     ];
-
-    // Return the updated array.
     return $variables;
   }
 
@@ -127,26 +150,14 @@ class LibraryAttacher implements LibraryAttacherInterface {
     string $event,
     string $experimentId
   ): array {
-    // If no active experiment is found, don't attach the library.
-    if (!$this->config->hasActiveExperimentWithId($experimentId)) {
-      return $variables;
-    }
-
-    $experiment = $this->config->getActiveExperimentById($experimentId);
-    $variation = $this->variationPicker->pickVariationForExperiment($experiment);
-
-    $variables['#attached']['library'][] = self::EVENT_LIBRARY;
-    $variables['#attached']['drupalSettings']['janus_ab']['event'] = [
-      'experimentId' => $experiment->getId(),
-      'variationId'  => $variation->getId(),
-      'postUrl'      => $this->config->getSuccessUrl(),
-      'selector'     => $selector,
-      'event'        => $event,
-      'userIdCookie' => $this->getUserIdCookieName($experiment),
-    ];
-
     // Return the updated array.
-    return $variables;
+    return $this->attachEventLibraryForExperimentId(
+      $variables,
+      $selector,
+      $event,
+      $experimentId,
+      FALSE
+    );
   }
 
   /**
@@ -157,6 +168,42 @@ class LibraryAttacher implements LibraryAttacherInterface {
     string $selector,
     string $event,
     string $experimentId
+  ): array {
+    // Return the updated array.
+    return $this->attachEventLibraryForExperimentId(
+      $variables,
+      $selector,
+      $event,
+      $experimentId,
+      TRUE
+    );
+  }
+
+  /**
+   * Attach event based libraries to a render array.
+   *
+   * Handled generically to avoid code duplication.
+   *
+   * @param array $variables
+   *   The given variable render array.
+   * @param string $selector
+   *   A valid JQuery selector.
+   * @param string $event
+   *   The JavaScript event to bind the library to.
+   * @param string $experimentId
+   *   The experiment Id to attach for.
+   * @param bool $isTraffic
+   *   Should a traffic library be rendered or not.
+   *
+   * @return array
+   *   The updated array of variables.
+   */
+  private function attachEventLibraryForExperimentId(
+    array  $variables,
+    string $selector,
+    string $event,
+    string $experimentId,
+    bool   $isTraffic
   ): array {
     // If no active experiment is found, don't attach the library.
     if (!$this->config->hasActiveExperimentWithId($experimentId)) {
@@ -170,13 +217,14 @@ class LibraryAttacher implements LibraryAttacherInterface {
     $variables['#attached']['drupalSettings']['janus_ab']['event'] = [
       'experimentId' => $experiment->getId(),
       'variationId'  => $variation->getId(),
-      'postUrl'      => $this->config->getTrafficUrl(),
+      'postUrl'      => $isTraffic ?
+        $this->config->getTrafficUrl() :
+        $this->config->getSuccessUrl(),
       'selector'     => $selector,
       'event'        => $event,
       'userIdCookie' => $this->getUserIdCookieName($experiment),
     ];
 
-    // Return the updated array.
     return $variables;
   }
 

@@ -10,7 +10,6 @@ use Drupal\Core\Render\PlaceholderGeneratorInterface;
 use Drupal\Core\Render\PlaceholderingRenderCache;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Synetic\JanusAB\Config\ABConfigInterface;
-use Synetic\JanusAB\Variation\Variation;
 use Synetic\JanusAB\Variation\VariationPickerInterface;
 
 /**
@@ -99,7 +98,7 @@ class JanusABRenderCache extends PlaceholderingRenderCache {
     // and variation ids to ensure user's caching works correctly.
     if ($this->config->hasActiveExperiment()) {
       $experiment = $this->config->getActiveExperiment();
-      $variation  = $this->variationPicker->pickVariationForExperiment(
+      $variation = $this->variationPicker->pickVariationForExperiment(
         $experiment
       );
       $elements['#cache']['context'][] = $experiment->getId();

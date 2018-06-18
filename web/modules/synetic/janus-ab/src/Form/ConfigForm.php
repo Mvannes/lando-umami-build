@@ -134,7 +134,7 @@ class ConfigForm extends ConfigFormBase {
 
     $form['trackingId'] = [
       '#type'          => 'textfield',
-      '#title'         => 'Google Analytics id',
+      '#title'         => 'Google Analytics tracking id',
       '#required'      => TRUE,
       '#default_value' => $config->get('trackingId'),
     ];

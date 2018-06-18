@@ -287,7 +287,12 @@ This is done in the admin panel.
 Click the "New Goal" button highlighted here.  
 ![Goals view](docs/images/UA-goal-view.png)
 
-Step one here will be to create a goal with the goal type "Event" like so:  
+Step one will be to select a custom goal. If your Google Analytics property does not have
+an industry set, this view may not appear, and you can proceed to step two.  
+![Goal select custom](docs/images/UA-template-step.png)  
+Select the custom goal and click "Continue".
+
+Step two here will be to create a goal with the goal type "Event" like so:  
 ![Goal description](docs/images/UA-goal-description.png)  
 The goal name isn't relevant, but you should probably name it something descriptive as to what it does.
 
@@ -480,12 +485,17 @@ Similarly, to the Janus Render Cache module, the Janus Page Cache Module overwri
 
 **Turn this on when you are using the internal page cache!**
 ### Varnish
-There is currently no Varnish support, but examples for using this module with Varnish will appear here later.
-We recommend taking a look at the Internal (Dynamic) Page cache module(s) and their method of handling cache keys,
-and the [Varnish VLC Basics](https://book.varnish-software.com/4.0/chapters/VCL_Basics.html).
 
-Some inspiration can also be gained from [this](https://info.varnish-software.com/blog/live-ab-testing-varnish-and-vcs)
- article.
+There is currently some Varnish support, found [here](VARNISH.md).
+This is not complete support, and it's not as nice as we would like it to be,
+so any other solutions are welcome!
+
+## Bots and Crawlers
+For SEO purposes, it tends to be preferred to remove any bots and crawlers from any AB-tests.
+To do this, the module ships with a different VariationPicker than the janus-ab-lib. This module
+uses the [JayBizzle/CrawlerDetect](https://github.com/JayBizzle/Crawler-Detect) PHP library to always serve
+the control variation to bots. This will ensure that SEO is not impacted by running AB-tests, as the site will not
+change for bots and crawlers.
 
 ## Data storage
 Currently, data is only send to Google Analytics, this is because this was the minimum requirement we set up for the 

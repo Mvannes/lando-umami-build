@@ -12,7 +12,6 @@ use Drupal\page_cache\StackMiddleware\PageCache;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Synetic\JanusAB\Config\ABConfigInterface;
-use Synetic\JanusAB\Variation\VariationPickerInterface;
 
 /**
  * Override the PageCache to allow for AB-testing.
