@@ -2,7 +2,6 @@ name: demo-umami
 recipe: drupal8
 proxy:
   nginx:
-  cache:
     - build-umami.localhost
   # mailhog:
   #   - mailhog.build-umami.localhost
@@ -26,18 +25,6 @@ services:
   appserver:
     overrides:
        services:
-         # In this case we want to override the default container setup to ignore directories, such as the vendor
-         # library, which is not necessary to be synced with the OS environment and this container.
-         volumes:
-#           - /app/vendor/
-           - /app/documentation/
-         # All the way down in this configuration we added a compose file containing shared volumes. These volumes
-         # contain the public and private file directories. We do not want them synced with drupal but we do want them
-         # to be shared between nginx and the appserver container. Because nginx serves static files, while the
-         # appserver (php-fpm container) serves the php files.
-           - public_files:/app/web/sites/default/files
-           - public_files:/app/files/public
-           - private_files:/app/files/private
          # Environment variable to let PHP know that we are running a develop environment. Used in our setting.php setup.
          environment:
            SYNETIC_DTAP_ENV: develop
@@ -62,45 +49,7 @@ services:
 #           - /app/vendor/
 #           - /app/documentation/
 #           - /app/files
-  cache:
-    type: varnish:4.1
-    # Specify the backend(s) that varnish should attempt to connect to
-    #
-    # This can be an array or string and should be the names of other services
-    # provided directly by this file or by a recipe. You can discover the services
-    # your app has by running `lando info`
-    #
-    backends:
-      - nginx
-    # Optionally spin up another nginx instance so that you can secure your
-    # traffic over ssl.
-    #
-    # The varnish ssl service will be called NAME_ssl, or cache_ssl in this
-    # example.
-    #
-#    ssl: true
-    # Optionally load in a custom vcl file. This is relative to the app root
-    #
-    # You will not need to import the standard library or manage backends in this
-    # file. Those are handled automatically.
-    #
-    vcl: config/shared/varnish/default.vcl
-tooling:
-  varnishadm:
-    service: cache
-    user: root
-  varnishstat:
-    service: cache
-    user: root
-  varnishlog:
-    service: cache
-    user: root
-  varnishtop:
-    service: cache
-    user: root
-  varnishncsa:
-    service: cache
-    user: root
+# tooling:
 #  npm:
 #    service: node
 #  node:
@@ -133,7 +82,3 @@ events:
     # This is specific for generating the public html files for pattern lab.
     #- appserver: cd $LANDO_MOUND/web/themes/custom/PROJECT_NAME/styleguide && composer install && php core/console generate
 
-# A list of docker compose files to load relative to my app root directory. This follows the docker-compose v3 format,
-# and will be merged with the generated docker-compose file from the .lando.yml configuration.
-compose:
- - compose.yml

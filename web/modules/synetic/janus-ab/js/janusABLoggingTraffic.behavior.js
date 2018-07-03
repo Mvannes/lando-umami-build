@@ -16,8 +16,8 @@
    */
   Drupal.behaviors.janusABLoggingTraffic = {
     attach: function (context, settings) {
-      let moduleSettingsTraffic = drupalSettings.janus_ab.traffic;
-      let userId = $.cookie(moduleSettingsTraffic.userIdCookie);
+      var moduleSettingsTraffic = drupalSettings.janus_ab.traffic;
+      var userId = $.cookie(moduleSettingsTraffic.userIdCookie);
 
       $('body', context).once('janusABLoggingTraffic').each(function () {
         $.ajax({

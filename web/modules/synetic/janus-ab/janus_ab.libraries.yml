@@ -1,6 +1,6 @@
 success:
   js:
-    js/logSuccess.behavior.js: {}
+    js/janusABLoggingSuccess.behavior.js: {}
   dependencies:
    - core/jquery
    - core/drupal
@@ -10,7 +10,7 @@ success:
 
 traffic:
   js:
-    js/logTraffic.behavior.js: {}
+    js/janusABLoggingTraffic.behavior.js: {}
   dependencies:
    - core/jquery
    - core/drupal
@@ -20,7 +20,7 @@ traffic:
 
 event:
   js:
-    js/logEvent.behavior.js: {}
+    js/janusABLoggingEvent.behavior.js: {}
   dependencies:
    - core/jquery
    - core/drupal

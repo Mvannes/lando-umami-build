@@ -18,8 +18,8 @@
   Drupal.behaviors.janusABLoggingSuccess = {
     attach: function (context, settings) {
       $('body', context).once('janusABLoggingSuccess').each(function () {
-        let moduleSettingsSuccess = drupalSettings.janus_ab.success;
-        let userId = $.cookie(moduleSettingsSuccess.userIdCookie);
+        var moduleSettingsSuccess = drupalSettings.janus_ab.success;
+        var userId = $.cookie(moduleSettingsSuccess.userIdCookie);
 
         $.ajax({
           url: moduleSettingsSuccess.successUrl,

@@ -1,0 +1,8 @@
+name: 'Janus AB layout builder'
+type: module
+description: 'Extends the layout builder to add AB-testing'
+core: 8.x
+package: 'JanusAB'
+dependencies:
+  - JanusAB:janus_ab
+  - Core:layout_builder

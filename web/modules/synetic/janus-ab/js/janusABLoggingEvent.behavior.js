@@ -18,8 +18,8 @@
    */
   Drupal.behaviors.janusABLoggingEvent = {
     attach: function (context, settings) {
-      let moduleSettingsEvent = drupalSettings.janus_ab.event;
-      let userId = $.cookie(moduleSettingsEvent.userIdCookie);
+      var moduleSettingsEvent = drupalSettings.janus_ab.event;
+      var userId = $.cookie(moduleSettingsEvent.userIdCookie);
 
       $(moduleSettingsEvent.selector, context)
         .once('janusABLoggingPost')
