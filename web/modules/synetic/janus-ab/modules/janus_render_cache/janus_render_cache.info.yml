@@ -1,8 +1,0 @@
-name: 'Janus AB render cache'
-type: module
-description: 'Overrides the RenderCache with an extension that allows for caching of variations.'
-core: 8.x
-package: 'JanusAB'
-dependencies:
-  - JanusAB:janus_ab
-#  - Core:page_cache
