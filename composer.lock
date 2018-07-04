@@ -1368,12 +1368,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core.git",
-                "reference": "c7a0a08c82e95d5e11a055a0749c936df2f0223b"
+                "reference": "ce7666ff6a8580a32b9028d65bf3572bdb3028ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core/zipball/c7a0a08c82e95d5e11a055a0749c936df2f0223b",
-                "reference": "c7a0a08c82e95d5e11a055a0749c936df2f0223b",
+                "url": "https://api.github.com/repos/drupal/core/zipball/ce7666ff6a8580a32b9028d65bf3572bdb3028ad",
+                "reference": "ce7666ff6a8580a32b9028d65bf3572bdb3028ad",
                 "shasum": ""
             },
             "require": {
@@ -1597,7 +1597,7 @@
                 "GPL-2.0-or-later"
             ],
             "description": "Drupal is an open source content management platform powering millions of websites and applications.",
-            "time": "2018-07-02T10:48:47+00:00"
+            "time": "2018-07-02T16:26:17+00:00"
         },
         {
             "name": "drupal/demo_umami",

@@ -6,7 +6,13 @@ namespace Drupal\janus_layout_builder\Entity;
 
 use Drupal\layout_builder\Entity\LayoutBuilderEntityViewDisplay;
 
-class JanusLayoutBuilderEntityViewDisplay extends LayoutBuilderEntityViewDisplay{
+/**
+ * Extension on the layout builder's entity view display to support JanusAB.
+ *
+ * Adds knowledge about configured experiments to choose which sections get
+ * displayed.
+ */
+class JanusLayoutBuilderEntityViewDisplay extends LayoutBuilderEntityViewDisplay {
 
   /**
    * Used in checking for active experiments.
@@ -29,7 +35,12 @@ class JanusLayoutBuilderEntityViewDisplay extends LayoutBuilderEntityViewDisplay
    */
   private $routeMatcher;
 
+  /**
+   * {@inheritdoc}
+   */
   public function __construct(array $values, $entity_type) {
+    // Can't get these from the container through regular constructor DI
+    // due to how this class is constructed by Drupal.
     $this->abConfig        = \Drupal::service('janus_ab.ab_config');
     $this->variationPicker = \Drupal::service('janus_ab.variation_picker');
     $this->routeMatcher    = \Drupal::routeMatch();
@@ -41,20 +52,17 @@ class JanusLayoutBuilderEntityViewDisplay extends LayoutBuilderEntityViewDisplay
    * {@inheritdoc}
    */
   public function getSections() {
-    $sections =  parent::getSections();
+    $sections = parent::getSections();
     $route    = $this->routeMatcher->getRouteObject();
 
-    if ((!$this->abConfig->hasActiveExperiment()) ||
-      NULL === $route ||
+    // Catch cases where there is no need to handle anything for experiments.
+    if (NULL === $route ||
       TRUE === $route->getOption('_admin_route') ||
       $route->hasRequirement('_field_ui_view_mode_access')) {
       return $sections;
     }
 
     $displayableSections = [];
-    /**
-     * @var \Drupal\layout_builder\Section $section
-     */
     foreach ($sections as $section) {
       $layoutSettings = $section->getLayoutSettings();
       if (!isset($layoutSettings['experiment'], $layoutSettings['variations'])) {
@@ -62,7 +70,7 @@ class JanusLayoutBuilderEntityViewDisplay extends LayoutBuilderEntityViewDisplay
         continue;
       }
 
-      $experimentId = $layoutSettings['experiment'];
+      $experimentId        = $layoutSettings['experiment'];
       $availableVariations = $layoutSettings['variations'];
 
       // Shouldn't display the variation if it's experiment isn't active.
@@ -78,7 +86,9 @@ class JanusLayoutBuilderEntityViewDisplay extends LayoutBuilderEntityViewDisplay
       }
 
       $experiment = $this->abConfig->getActiveExperimentById($experimentId);
-      $variation = $this->variationPicker->pickVariationForExperiment($experiment);
+      $variation  = $this->variationPicker->pickVariationForExperiment(
+        $experiment
+      );
 
       if (in_array($variation->getId(), $availableVariations)) {
         $displayableSections[] = $section;

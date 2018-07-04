@@ -19,6 +19,7 @@
       <directory>src</directory>
       <directory>modules/janus_render_cache/src</directory>
       <directory>modules/janus_page_cache/src</directory>
+      <directory>modules/janus_layout_builder/src</directory>
     </whitelist>
   </filter>
 </phpunit>

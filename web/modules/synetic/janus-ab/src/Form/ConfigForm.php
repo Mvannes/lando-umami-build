@@ -547,6 +547,41 @@ class ConfigForm extends ConfigFormBase {
     FormStateInterface $formState
   ): void {
     parent::validateForm($form, $formState);
+
+    $vendorName = $formState->getValue('vendorName');
+
+    if (1 !== preg_match('/^[a-zA-Z0-9\-]+$/', $vendorName)) {
+      $formState->setErrorByName(
+        'vendorName',
+        'A vendor name may only contain alphanumeric characters, or the "-" character due to its use in cookie creation.'
+      );
+    }
+    $siteName = $formState->getValue('siteName');
+    if (1 !== preg_match('/^[a-zA-Z0-9\-]+$/', $siteName)) {
+      $formState->setErrorByName(
+        'siteName',
+        'A site name may only contain alphanumeric characters, or the "-" character due to its use in cookie creation.'
+      );
+    }
+
+
+    // Validate that traffic and success urls have proper routes.
+    $trafficUrl = $formState->getValue('trafficUrl');
+    if (stripos($trafficUrl, '/') !== 0 && stripos($trafficUrl, 'http') !== 0) {
+      $formState->setErrorByName(
+        'trafficUrl',
+        'The traffic url must be either a full path like "https://synetic.nl" or a relative path like "/home"'
+      );
+    }
+    $successUrl = $formState->getValue('successUrl');
+    if (stripos($successUrl, '/') !== 0 && stripos($successUrl, 'http') !== 0) {
+      $formState->setErrorByName(
+        'successUrl',
+        'The success url must be either a full path like "https://synetic.nl" or a relative path like "/home"'
+      );
+    }
+
+    // Validate experiment information from this point.
     $experiments = $formState->getValue('container');
     $dateRanges = [];
     foreach ($experiments as $key => $experiment) {
@@ -554,6 +589,19 @@ class ConfigForm extends ConfigFormBase {
       if (!stristr($key, self::EXPERIMENT_PREFIX)) {
         continue;
       }
+      $experimentId = $experiment['id'];
+
+      // Ensure that the experiment id is a Google Optimize experiment id.
+      if (1 !== preg_match('/^[A-Za-z0-9\_\-]{22}$/', $experimentId)) {
+        $formState->setErrorByName(
+          'container][' . $key . '][id',
+          sprintf(
+            'Experiment "%s" id is not a Google Optimize Experiment Id.',
+            $experimentId
+          )
+        );
+      }
+
       // Date validation. Start date > End date.
       // Times are set to ensure single day experiments are possible.
       $startDate = new \DateTime($experiment['startDate']);
@@ -565,17 +613,16 @@ class ConfigForm extends ConfigFormBase {
           'container][' . $key . '][startDate',
           sprintf(
             'Experiment "%s" has a start date after its end date.',
-            $experiment['id']
+            $experimentId
           )
         );
         $formState->setErrorByName(
           'container][' . $key . '][endDate',
           sprintf(
             'Experiment "%s" has a start date after its end date.',
-            $experiment['id']
+            $experimentId
           )
         );
-
       }
       // Date validation. No overlap of experiments date ranges.
       foreach ($dateRanges as $experimentKey => $dates) {
@@ -589,13 +636,13 @@ class ConfigForm extends ConfigFormBase {
             'container][' . $key . '][startDate',
             sprintf(
               'Experiment "%s" conflicts with experiment "%s"',
-              $experiment['id'],
+              $experimentId,
               $experimentKey)
           );
         }
       }
       // Store the current date range for future iteration.
-      $dateRanges[$experiment['id']] = [
+      $dateRanges[$experimentId] = [
         'startDate' => $startDate,
         'endDate'   => $endDate,
       ];
@@ -606,23 +653,8 @@ class ConfigForm extends ConfigFormBase {
           'container][' . $key . '][variations',
           sprintf(
             'Experiment "%s" has no configured variations.',
-            $experiment['id']
+            $experimentId
           )
-        );
-      }
-      // Validate that traffic and success urls have proper routes.
-      $trafficUrl = $formState->getValue('trafficUrl');
-      if (stripos($trafficUrl, '/') !== 0 && stripos($trafficUrl, 'http') !== 0) {
-        $formState->setErrorByName(
-          'trafficUrl',
-          'The traffic url must be either a full path like "https://synetic.nl" or a relative path like "/home"'
-        );
-      }
-      $successUrl = $formState->getValue('successUrl');
-      if (stripos($successUrl, '/') !== 0 && stripos($successUrl, 'http') !== 0) {
-        $formState->setErrorByName(
-          'successUrl',
-          'The success url must be either a full path like "https://synetic.nl" or a relative path like "/home"'
         );
       }
     }

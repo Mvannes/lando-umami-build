@@ -9,20 +9,13 @@ use Drupal\Core\Form\SubformStateInterface;
 use Drupal\Core\Layout\LayoutDefault;
 use Drupal\Core\Plugin\PluginFormInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Unish\archiveDumpCase;
 
-class DefaultConfigLayout extends LayoutDefault implements PluginFormInterface {
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct(
-    array $configuration,
-    $plugin_id,
-    $plugin_definition
-  ) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-  }
+/**
+ * Extension that replaces the default Layout to add a form view.
+ *
+ * Contains plugin based form extension to add JanusAB related form fields.
+ */
+class JanusABConfigLayout extends LayoutDefault implements PluginFormInterface {
 
   /**
    * {@inheritdoc}
@@ -34,10 +27,26 @@ class DefaultConfigLayout extends LayoutDefault implements PluginFormInterface {
     ];
   }
 
-  public function variationFormCallback(&$form, FormStateInterface $form_state, Request $request) {
+  /**
+   * Callback used with variation form ajax.
+   *
+   * @param array $form
+   *   The form that was changed for this callback.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current form state.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The current request.
+   *
+   * @return array
+   *   The variation container.
+   */
+  public function variationFormCallback(
+    array &$form,
+    FormStateInterface $form_state,
+    Request $request
+  ) {
     return $form['layout_settings']['variation_container'];
   }
-
 
   /**
    * {@inheritdoc}
@@ -48,11 +57,7 @@ class DefaultConfigLayout extends LayoutDefault implements PluginFormInterface {
     if ($form_state instanceof SubformStateInterface) {
       $form_state = $form_state->getCompleteFormState();
     }
-    /**
-     * Get this from the service container through DI instead.
-     *
-     * @var \Synetic\JanusAB\Config\ABConfigInterface $config
-     */
+
     $config = \Drupal::service('janus_ab.ab_config');
     $experiments = $config->getExperiments();
 
@@ -61,7 +66,7 @@ class DefaultConfigLayout extends LayoutDefault implements PluginFormInterface {
       $variationsByExperiment[$experiment->getId()] = [];
       foreach ($experiment->getVariations() as $variation) {
         $variationsByExperiment[$experiment->getId()] += [
-          $variation->getId() => $variation->getName()
+          $variation->getId() => $variation->getName(),
         ];
       }
     }
@@ -75,18 +80,21 @@ class DefaultConfigLayout extends LayoutDefault implements PluginFormInterface {
       '#empty_value' => NULL,
       '#default_value' => $this->configuration['experiment'] ?? NULL,
       '#ajax' => [
-        'event'=>'change',
-        'callback'=> [$this, 'variationFormCallback'],
-        'wrapper'=> 'variation-target',
-      ]
+        'event' => 'change',
+        'callback' => [$this, 'variationFormCallback'],
+        'wrapper' => 'variation-target',
+      ],
     ];
 
     $form['variation_container'] = [
       '#type' => 'container',
-      '#id'   => 'variation-target'
+      '#id'   => 'variation-target',
     ];
 
-    $experimentId = $form_state->getValue('layout_settings', [])['experiment'] ?? $this->configuration['experiment'];
+    $experimentId = $form_state->getValue(
+      'layout_settings',
+      []
+    )['experiment'] ?? $this->configuration['experiment'];
     $form['variation_container']['variations'] = [
       '#type' => 'checkboxes',
       '#title' => 'Variations',
@@ -99,6 +107,10 @@ class DefaultConfigLayout extends LayoutDefault implements PluginFormInterface {
   }
 
   /**
+   * Does nothing, we don't really care about custom validation here.
+   *
+   * Sadly, it must be implemented by the interface.
+   *
    * {@inheritdoc}
    */
   public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
@@ -113,7 +125,8 @@ class DefaultConfigLayout extends LayoutDefault implements PluginFormInterface {
       NULL :
       $form_state->getValue('experiment');
     $configuredVariations = [];
-    foreach ($form_state->getValue('variation_container')['variations'] ?? [] as $varKey => $formValue) {
+    $formVariations = $form_state->getValue('variation_container')['variations'] ?? [];
+    foreach ($formVariations as $varKey => $formValue) {
       if (is_string($formValue)) {
         $configuredVariations[] = $formValue;
       }

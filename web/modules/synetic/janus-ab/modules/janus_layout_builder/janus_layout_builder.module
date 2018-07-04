@@ -1,29 +1,29 @@
 <?php
-declare(strict_types = 1);
-
-use Drupal\janus_layout_builder\Plugin\Layout\DefaultConfigLayout;
-use Drupal\Core\Layout\LayoutDefault;
-use Drupal\janus_layout_builder\Entity\JanusLayoutBuilderEntityViewDisplay;
-use Drupal\layout_builder\Entity\LayoutBuilderEntityViewDisplayStorage;
-use Drupal\layout_builder\Form\LayoutBuilderEntityViewDisplayForm;
 
 /**
  * @file
  * Contains janus_layout_builder.module.
  */
 
+declare(strict_types = 1);
+
+use Drupal\Core\Layout\LayoutDefault;
+use Drupal\janus_layout_builder\Plugin\Layout\JanusABConfigLayout;
+use Drupal\janus_layout_builder\Entity\JanusLayoutBuilderEntityViewDisplay;
+use Drupal\layout_builder\Form\LayoutBuilderEntityViewDisplayForm;
+use Drupal\layout_builder\Entity\LayoutBuilderEntityViewDisplayStorage;
+
 
 /**
  * Implements hook_layout_alter().
- *
- * Overrides the layout builder's layouts with the JanusAB layout class.
  */
 function janus_layout_builder_layout_alter(&$definitions) {
+  /* @var $definition \Drupal\Core\Layout\LayoutDefinition */
   foreach ($definitions as $name => $definition) {
     if ($definition->getClass() !== LayoutDefault::class) {
       continue;
     }
-    $definition->setClass(DefaultConfigLayout::class);
+    $definition->setClass(JanusABConfigLayout::class);
   }
 }
 
@@ -31,7 +31,6 @@ function janus_layout_builder_layout_alter(&$definitions) {
  * Implements hook_entity_type_alter().
  */
 function janus_layout_builder_entity_type_alter(array &$entity_types) {
-  /** @var \Drupal\Core\Entity\EntityTypeInterface[] $entity_types */
   $entity_types['entity_view_display']
     ->setClass(JanusLayoutBuilderEntityViewDisplay::class)
     ->setStorageClass(LayoutBuilderEntityViewDisplayStorage::class)

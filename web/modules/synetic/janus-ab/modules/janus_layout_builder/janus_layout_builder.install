@@ -1,18 +1,15 @@
 <?php
 
-declare(strict_types = 1);
-
 /**
  * @file
  * Install, update, and uninstall functions for the Janus Layout Builder module.
  */
 
+declare(strict_types = 1);
+
 /**
  * Implements hook_install().
- *
- * Ensures this module's hooks are always called after the layout builder's
- * hooks.
  */
 function janus_layout_builder_install() {
-  module_set_weight('janus_layout_builder', 10000000);
+  module_set_weight('janus_layout_builder', 10);
 }
